@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -12,7 +14,21 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+
+	_ "github.com/go-sql-driver/mysql"
 )
+
+// Estructura per importar el fitxer JSON amb la configuració
+type Configuration struct {
+	Database struct {
+		Driver   string
+		Server   string
+		Port     int
+		User     string
+		Password string
+		Database string
+	}
+}
 
 const SERVER_IP = "0.0.0.0"
 
@@ -94,6 +110,8 @@ func main() {
 		flag.PrintDefaults()
 		fmt.Println()
 
+		// To exit a program without an error, you can set the exit code of the program to 0
+		// Any other numerical value between 1 and 125 (golang) shows the program encountered an error.
 		os.Exit(0)
 	}
 
@@ -102,6 +120,31 @@ func main() {
 	fmt.Println("\tenv:", env)
 	fmt.Println("\tport:", port)
 	fmt.Println("\tprint-routes:", printRoutes)
+
+	// Carreguem el fitxer amb la configuració
+	file, err := os.Open("./config/config.json")
+	if err != nil {
+		log.Fatal("can't open config file: ", err)
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	Config := Configuration{}
+	err = decoder.Decode(&Config)
+	if err != nil {
+		log.Fatal("can't decode config JSON: ", err)
+	}
+	log.Println("Config file:", Config)
+
+	// Connectem amb la BD
+	// parseTime: parseTime=true changes the output type of DATE and DATETIME values to time.Time instead of []byte / string The date or datetime like 0000-00-00 00:00:00 is converted into zero value of time.Time.
+	db, err := sql.Open(Config.Database.Driver,
+		Config.Database.User+":"+Config.Database.Password+"@("+Config.Database.Server+":"+fmt.Sprint(Config.Database.Port)+")/"+Config.Database.Database+"?parseTime=true")
+	if err != nil {
+		log.Fatal(err) // Fatal is equivalent to Print() followed by a call to os.Exit(1).
+	}
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
 
 	// Declarem les rutes
 	router := mux.NewRouter()
