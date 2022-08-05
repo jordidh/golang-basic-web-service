@@ -126,6 +126,7 @@ func main() {
 	if err != nil {
 		log.Fatal("can't open config file: ", err)
 	}
+	// Tanquem la connexió abans de finalitzar el programa
 	defer file.Close()
 	decoder := json.NewDecoder(file)
 	Config := Configuration{}
@@ -145,6 +146,41 @@ func main() {
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+	log.Println("Connected to dabatase", Config.Database.Database)
+
+	// Tanquem la connexió abans de finalitzar el programa
+	defer db.Close()
+
+	var version string
+	err2 := db.QueryRow("SELECT VERSION()").Scan(&version)
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	log.Println("Database version", version)
+
+	/*
+		// Fem una consulta a la BD
+		res, err := db.Query("SELECT * FROM cities")
+
+		// Tanquem la connexió a BD
+		defer res.Close()
+
+		// Mostrem les dades
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for res.Next() {
+			var city City
+			err := res.Scan(&city.Id, &city.Name, &city.Population)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Printf("%v\n", city)
+		}
+	*/
 
 	// Declarem les rutes
 	router := mux.NewRouter()
