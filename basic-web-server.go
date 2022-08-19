@@ -203,8 +203,8 @@ func main() {
 	pt1 := publisher.Point{X: 2, Y: 3}
 	fmt.Println(pt1)
 
-	pt1 := books.Point{X: 2, Y: 3}
-	fmt.Println(pt1)
+	pt2 := books.Point{X: 2, Y: 3}
+	fmt.Println(pt2)
 
 	// Mostrem totes les
 	if printRoutes {
