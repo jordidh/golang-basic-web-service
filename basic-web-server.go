@@ -14,7 +14,7 @@ import (
 	"time"
 
 	books "github.com/jordidh/basicwebserver/routes"
-	publisher "github.com/jordidh/basicwebserver/routes"
+	publishers "github.com/jordidh/basicwebserver/routes"
 
 	"github.com/gorilla/mux"
 
@@ -200,7 +200,7 @@ func main() {
 	authorrouter.HandleFunc("/", AllAuthors)
 	authorrouter.HandleFunc("/{name}", GetAuthor).Methods("GET")
 
-	pt1 := publisher.Point{X: 2, Y: 3}
+	pt1 := publishers.Point{X: 2, Y: 3}
 	fmt.Println(pt1)
 
 	pt2 := books.Point{X: 2, Y: 3}
