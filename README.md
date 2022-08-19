@@ -42,3 +42,20 @@ go run webserver.go -env production -port 3100 -graceful-timeout 15s
 # Print all routes
 go run webserver.go -print-routes
 ```
+
+Commands useful
+<https://manpages.debian.org/testing/golang-go/index.html>
+
+```bash
+# List the packages named by the import paths
+go List
+
+# Print go environment information
+go env
+
+# Print go executables version
+go version
+
+# Remove object files and cached files
+go clean
+```

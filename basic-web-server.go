@@ -13,8 +13,7 @@ import (
 	"strings"
 	"time"
 
-	books "github.com/jordidh/basicwebserver/routes"
-	publishers "github.com/jordidh/basicwebserver/routes"
+	"github.com/jordidh/basicwebserver/controllers"
 
 	"github.com/gorilla/mux"
 
@@ -34,59 +33,6 @@ type Configuration struct {
 }
 
 const SERVER_IP = "0.0.0.0"
-
-// BOOKS
-func ReadPage(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	title := vars["title"]
-	page := vars["page"]
-
-	fmt.Fprintf(w, "You've requested the book: %s, page %s\n", title, page)
-}
-
-func AllBooks(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "You've get all books\n")
-}
-
-func CreateBook(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	title := vars["title"]
-
-	fmt.Fprintf(w, "You've created the book: %s\n", title)
-}
-
-func GetBook(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	title := vars["title"]
-
-	fmt.Fprintf(w, "You've readed the book: %s\n", title)
-}
-
-func UpdateBook(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	title := vars["title"]
-
-	fmt.Fprintf(w, "You've upated the book: %s\n", title)
-}
-
-func DeleteBook(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	title := vars["title"]
-
-	fmt.Fprintf(w, "You've deleted the book: %s\n", title)
-}
-
-// AUTHORS
-func AllAuthors(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "You've get all authors\n")
-}
-
-func GetAuthor(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	name := vars["name"]
-
-	fmt.Fprintf(w, "You've get the author: %s\n", name)
-}
 
 func main() {
 	var wait time.Duration
@@ -185,26 +131,12 @@ func main() {
 		}
 	*/
 
-	// Declarem les rutes
+	// Declarem el router
 	router := mux.NewRouter()
 
-	bookrouter := router.PathPrefix("/books").Subrouter()
-	bookrouter.HandleFunc("/", AllBooks)
-	bookrouter.HandleFunc("/{title}", GetBook).Methods("GET")
-	bookrouter.HandleFunc("/{title}", CreateBook).Methods("POST")
-	bookrouter.HandleFunc("/{title}", UpdateBook).Methods("PUT")
-	bookrouter.HandleFunc("/{title}", DeleteBook).Methods("DELETE")
-	bookrouter.HandleFunc("/{title}/page/{page}", ReadPage).Methods("GET")
-
-	authorrouter := router.PathPrefix("/authors").Subrouter()
-	authorrouter.HandleFunc("/", AllAuthors)
-	authorrouter.HandleFunc("/{name}", GetAuthor).Methods("GET")
-
-	pt1 := publishers.Point{X: 2, Y: 3}
-	fmt.Println(pt1)
-
-	pt2 := books.Point{X: 2, Y: 3}
-	fmt.Println(pt2)
+	// Creem controladors amb les seves rutes
+	controllers.BooksController{DB: db, Router: router, PathPrefix: "/books"}.Register()
+	controllers.AuthorsController{DB: db, Router: router, PathPrefix: "/authors"}.Register()
 
 	// Mostrem totes les
 	if printRoutes {
