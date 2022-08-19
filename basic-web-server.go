@@ -13,6 +13,9 @@ import (
 	"strings"
 	"time"
 
+	books "github.com/jordidh/basicwebserver/routes"
+	publisher "github.com/jordidh/basicwebserver/routes"
+
 	"github.com/gorilla/mux"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -196,6 +199,12 @@ func main() {
 	authorrouter := router.PathPrefix("/authors").Subrouter()
 	authorrouter.HandleFunc("/", AllAuthors)
 	authorrouter.HandleFunc("/{name}", GetAuthor).Methods("GET")
+
+	pt1 := publisher.Point{X: 2, Y: 3}
+	fmt.Println(pt1)
+
+	pt1 := books.Point{X: 2, Y: 3}
+	fmt.Println(pt1)
 
 	// Mostrem totes les
 	if printRoutes {
