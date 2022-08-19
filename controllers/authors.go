@@ -15,11 +15,11 @@ type AuthorsController struct {
 }
 
 // AUTHORS
-func AllAuthors(w http.ResponseWriter, r *http.Request) {
+func (c AuthorsController) AllAuthors(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "You've get all authors\n")
 }
 
-func GetAuthor(w http.ResponseWriter, r *http.Request) {
+func (c AuthorsController) GetAuthor(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	name := vars["name"]
 
@@ -29,6 +29,6 @@ func GetAuthor(w http.ResponseWriter, r *http.Request) {
 // Register routes function
 func (c AuthorsController) Register() {
 	authorrouter := c.Router.PathPrefix(c.PathPrefix).Subrouter()
-	authorrouter.HandleFunc("/", AllAuthors)
-	authorrouter.HandleFunc("/{name}", GetAuthor).Methods("GET")
+	authorrouter.HandleFunc("/", c.AllAuthors)
+	authorrouter.HandleFunc("/{name}", c.GetAuthor).Methods("GET")
 }

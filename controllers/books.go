@@ -15,7 +15,7 @@ type BooksController struct {
 }
 
 // BOOKS
-func ReadPage(w http.ResponseWriter, r *http.Request) {
+func (c BooksController) ReadPage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	title := vars["title"]
 	page := vars["page"]
@@ -23,32 +23,32 @@ func ReadPage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "You've requested the book: %s, page %s\n", title, page)
 }
 
-func AllBooks(w http.ResponseWriter, r *http.Request) {
+func (c BooksController) AllBooks(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "You've get all books\n")
 }
 
-func CreateBook(w http.ResponseWriter, r *http.Request) {
+func (c BooksController) CreateBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	title := vars["title"]
 
 	fmt.Fprintf(w, "You've created the book: %s\n", title)
 }
 
-func GetBook(w http.ResponseWriter, r *http.Request) {
+func (c BooksController) GetBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	title := vars["title"]
 
 	fmt.Fprintf(w, "You've readed the book: %s\n", title)
 }
 
-func UpdateBook(w http.ResponseWriter, r *http.Request) {
+func (c BooksController) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	title := vars["title"]
 
 	fmt.Fprintf(w, "You've upated the book: %s\n", title)
 }
 
-func DeleteBook(w http.ResponseWriter, r *http.Request) {
+func (c BooksController) DeleteBook(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	title := vars["title"]
 
@@ -58,10 +58,10 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 // Register routes function
 func (c BooksController) Register() {
 	bookrouter := c.Router.PathPrefix(c.PathPrefix).Subrouter()
-	bookrouter.HandleFunc("/", AllBooks)
-	bookrouter.HandleFunc("/{title}", GetBook).Methods("GET")
-	bookrouter.HandleFunc("/{title}", CreateBook).Methods("POST")
-	bookrouter.HandleFunc("/{title}", UpdateBook).Methods("PUT")
-	bookrouter.HandleFunc("/{title}", DeleteBook).Methods("DELETE")
-	bookrouter.HandleFunc("/{title}/page/{page}", ReadPage).Methods("GET")
+	bookrouter.HandleFunc("/", c.AllBooks)
+	bookrouter.HandleFunc("/{title}", c.GetBook).Methods("GET")
+	bookrouter.HandleFunc("/{title}", c.CreateBook).Methods("POST")
+	bookrouter.HandleFunc("/{title}", c.UpdateBook).Methods("PUT")
+	bookrouter.HandleFunc("/{title}", c.DeleteBook).Methods("DELETE")
+	bookrouter.HandleFunc("/{title}/page/{page}", c.ReadPage).Methods("GET")
 }
